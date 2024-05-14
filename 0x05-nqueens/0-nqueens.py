@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 import sys
 
-def IsValidPlace(board, row, column, N):
 
+def IsValidPlace(board, row, column, N):
+    """IsValidPlace to check if its possible or not"""
     for j in range(column):
         if board[row][j] == 'Q':
             return False
@@ -23,25 +24,27 @@ def IsValidPlace(board, row, column, N):
 
     return True
 
-def nqueens(board, N, column=0):
+
+def nqueens(board, N, column=0, solutions=[]):
+    """nQueens to add the Q when it posseble"""
     if column == N:
         solution = []
         for i in range(N):
             for j in range(N):
                 if board[i][j] == 'Q':
                     solution.append([i, j])
-        print(solution)
-        return True
-    
-    res = False
+        solutions.append(solution)
+        return
+
     for i in range(N):
         if IsValidPlace(board, i, column, N):
             board[i][column] = 'Q'
-            res = nqueens(board, N, column + 1) or res
+            nqueens(board, N, column + 1, solutions)
             board[i][column] = '.'
-    
-    return res
+
+
 def main():
+    """main function to run the script"""
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
@@ -57,6 +60,13 @@ def main():
         sys.exit(1)
 
     board = [['.' for _ in range(N)] for _ in range(N)]
-    nqueens(board, N)
+    solutions = []
+    nqueens(board, N, 0, solutions)
+
+    solutions.sort()
+    for solution in solutions:
+        print(solution)
+
+
 if __name__ == "__main__":
     main()
