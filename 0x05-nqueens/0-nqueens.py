@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""nQueens to add the Q when it posseble"""
 import sys
 
 
