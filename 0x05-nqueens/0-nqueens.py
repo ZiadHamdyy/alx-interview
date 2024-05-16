@@ -1,44 +1,47 @@
 #!/usr/bin/python3
-""" N queens """
-import sys
+""" N queens problem """
 
 
-if len(sys.argv) > 2 or len(sys.argv) < 2:
-    print("Usage: nqueens N")
-    exit(1)
+def nQueen(n):
+    """ N queens problem """
+    invalid = set()
+    pos = set()
+    neg = set()
+    res = []
+    board = [['.'] * n for _ in range(n)]
 
-if not sys.argv[1].isdigit():
-    print("N must be a number")
-    exit(1)
-
-if int(sys.argv[1]) < 4:
-    print("N must be at least 4")
-    exit(1)
-
-n = int(sys.argv[1])
-
-
-def queens(n, i=0, a=[], b=[], c=[]):
-    """ find possible positions """
-    if i < n:
-        for j in range(n):
-            if j not in a and i + j not in b and i - j not in c:
-                yield from queens(n, i + 1, a + [j], b + [i + j], c + [i - j])
-    else:
-        yield a
-
-
-def solve(n):
-    """ solve """
-    k = []
-    i = 0
-    for solution in queens(n, 0):
-        for s in solution:
-            k.append([i, s])
-            i += 1
-        print(k)
-        k = []
-        i = 0
+    def backtrack(row):
+        if row == n:
+            res.append([[i, j] for i in range(n)
+                        for j in range(n) if board[i][j] == 'Q'])
+            return
+        for col in range(n):
+            if col in invalid or (row - col) in neg or (row + col) in pos:
+                continue
+            invalid.add(col)
+            neg.add(row - col)
+            pos.add(row + col)
+            board[row][col] = 'Q'
+            backtrack(row + 1)
+            invalid.remove(col)
+            neg.remove(row - col)
+            pos.remove(row + col)
+            board[row][col] = '.'
+    backtrack(0)
+    return res
 
 
-solve(n)
+if __name__ == "__main__":
+    """ the entry point """
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        sys.exit(1)
+    if not sys.argv[1].isdigit():
+        print("N must be a number")
+        sys.exit(1)
+    if int(sys.argv[1]) < 4:
+        print("N must be at least 4")
+        sys.exit(1)
+    for solution in nQueen(int(sys.argv[1])):
+        print(solution)
