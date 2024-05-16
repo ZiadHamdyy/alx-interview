@@ -1,67 +1,44 @@
 #!/usr/bin/python3
-"""nQueens to add the Q when it possible"""
+""" N queens """
 import sys
 
 
-def is_valid_place(board, row, column, N):
-    """Check if placing a queen at the given position is valid."""
-    for j in range(column):
-        if board[row][j] == 'Q':
-            return False
+if len(sys.argv) > 2 or len(sys.argv) < 2:
+    print("Usage: nqueens N")
+    exit(1)
 
-    # Check upper left diagonal
-    for i, j in zip(range(row, -1, -1), range(column, -1, -1)):
-        if board[i][j] == 'Q':
-            return False
+if not sys.argv[1].isdigit():
+    print("N must be a number")
+    exit(1)
 
-    # Check lower left diagonal
-    for i, j in zip(range(row, N), range(column, -1, -1)):
-        if board[i][j] == 'Q':
-            return False
+if int(sys.argv[1]) < 4:
+    print("N must be at least 4")
+    exit(1)
 
-    return True
+n = int(sys.argv[1])
 
 
-def nqueens(board, N, column=0, solutions=None):
-    """Find all possible solutions for N-Queens problem."""
-    if solutions is None:
-        solutions = []
-
-    if column == N:
-        solutions.append([[i, j] for i in range(N) for j in range(N) if board[i][j] == 'Q'])
-        return
-
-    for i in range(N):
-        if is_valid_place(board, i, column, N):
-            board[i][column] = 'Q'
-            nqueens(board, N, column + 1, solutions)
-            board[i][column] = '.'
+def queens(n, i=0, a=[], b=[], c=[]):
+    """ find possible positions """
+    if i < n:
+        for j in range(n):
+            if j not in a and i + j not in b and i - j not in c:
+                yield from queens(n, i + 1, a + [j], b + [i + j], c + [i - j])
+    else:
+        yield a
 
 
-def main():
-    """Main function to run the script."""
-    if len(sys.argv) != 2:
-        print("Usage: nqueens N")
-        sys.exit(1)
-
-    try:
-        N = int(sys.argv[1])
-    except ValueError:
-        print("N must be a number")
-        sys.exit(1)
-
-    if N < 4:
-        print("N must be at least 4")
-        sys.exit(1)
-
-    board = [['.' for _ in range(N)] for _ in range(N)]
-    solutions = []
-    nqueens(board, N, 0, solutions)
-
-    solutions.sort()
-    for solution in solutions:
-        print(solution)
+def solve(n):
+    """ solve """
+    k = []
+    i = 0
+    for solution in queens(n, 0):
+        for s in solution:
+            k.append([i, s])
+            i += 1
+        print(k)
+        k = []
+        i = 0
 
 
-if __name__ == "__main__":
-    main()
+solve(n)
