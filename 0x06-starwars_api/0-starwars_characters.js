@@ -1,5 +1,5 @@
-#!/usr/bin/env node
-const request = require('request');
+#!/usr/bin/node
+const request = require("request");
 
 const filmUrl = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}/`;
 request(filmUrl, (error, response, body) => {
